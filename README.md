@@ -3,8 +3,8 @@
 Go tool to upload files
 
 ## Prerequisites
-* Create a new Cloud Platform project
-* Generate credentials for Drive API
+
+Create a new Cloud Platform project & generate `credentials.json` for [Drive API](https://www.iperiusbackup.net/en/how-to-enable-google-drive-api-and-get-client-credentials/)
 
 ## Usage
 
