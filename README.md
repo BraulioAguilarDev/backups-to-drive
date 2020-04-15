@@ -18,7 +18,10 @@ $ go run *.go -i ${file} -o ${description}  -f ${folder}
 | -o   | False    |     Description file |
 | -f   | False    |     Folder           |
 
-## TODO
+## Build binaries
+In your terminal run: `$ make`
+
+## ToDo
 Add Cron
 
 
