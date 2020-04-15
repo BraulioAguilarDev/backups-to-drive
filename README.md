@@ -19,7 +19,7 @@ $ go run *.go -i ${file} -o ${description}  -f ${folder}
 | -f   | False    |     Folder           |
 
 ## TODO
-Cron
+Add Cron
 
 
 [Was done with love](http://brauliodev.com/)
