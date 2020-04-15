@@ -2,6 +2,10 @@
 
 Go tool to upload files
 
+## Prerequisites
+* Create a new Cloud Platform project
+* Generate credentials for Drive API
+
 ## Usage
 
 ```shell
