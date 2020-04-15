@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// Comma func
 func Comma(v int64) string {
 	sign := ""
 	if v < 0 {
@@ -32,6 +33,7 @@ func Comma(v int64) string {
 	return sign + strings.Join(parts[j:], ",")
 }
 
+// FileSizeFormat func
 func FileSizeFormat(bytes int64, forceBytes bool) string {
 	if forceBytes {
 		return fmt.Sprintf("%v B", bytes)
@@ -46,9 +48,11 @@ func FileSizeFormat(bytes int64, forceBytes bool) string {
 		value /= 1000
 		i++
 	}
+
 	return fmt.Sprintf("%.1f %s", value, units[i])
 }
 
+// MeasureTransferRate func
 func MeasureTransferRate() func(int64) string {
 	start := time.Now()
 

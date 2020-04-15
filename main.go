@@ -1,71 +1,59 @@
 package main
 
 import (
-	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"mime"
-	"net/http"
-	"net/url"
-	"os"
-	"os/user"
 	"path/filepath"
-	"strconv"
-	"strings"
-	"time"
-
-	"golang.org/x/net/context"
-	"golang.org/x/oauth2"
-	"golang.org/x/oauth2/google"
-	"google.golang.org/api/drive/v2"
 )
 
 var (
-	inputPath  = flag.String("i", "", "input file path")
-	outputFile = flag.String("o", "", "output filename")
-	folderName = flag.String("f", "", "folder name")
+	inputPath  = flag.String("i", "", "Input file path")
+	outputFile = flag.String("o", "", "Output filename")
+	folderName = flag.String("f", "", "Folder name")
 )
 
+// Reference
+// https://developers.google.com/drive/api/v3/quickstart/go
 func main() {
 	flag.Parse()
-
-	ctx := context.Background()
-
-	b, err := ioutil.ReadFile("credentials.json")
+	app, err := NewCredentials()
 	if err != nil {
-		log.Fatalf("Unable to read client secret file: %v", err)
+		fmt.Printf("Unable to read client secret file. Error: %s", err)
 	}
 
-	config, err := google.ConfigFromJSON(b, drive.DriveScope)
+	srv, err := app.Initialize()
 	if err != nil {
-		log.Fatalf("Unable to parse client secret file to config: %v", err)
-	}
-	client := getClient(ctx, config)
-
-	srv, err := drive.New(client)
-	if err != nil {
-		log.Fatalf("Unable to retrieve drive Client %v", err)
+		fmt.Printf("Unable to get path to cached credential file. Error: %s", err)
 	}
 
-	fmt.Printf("Read file: %s\n", *inputPath)
 	outputTitle := *outputFile
-	if outputTitle == "" {
+	if len(outputTitle) == 0 {
 		outputTitle = filepath.Base(*inputPath)
 	}
-	fmt.Printf("Output name: %s\n", outputTitle)
 
 	ext := filepath.Ext(*inputPath)
+
 	mimeType := "application/octet-stream"
-	if ext != "" {
+	if len(ext) > 0 {
 		mimeType = mime.TypeByExtension(ext)
 	}
-	if mimeType == "" {
+
+	if len(mimeType) == 0 {
 		mimeType = "application/octet-stream"
 	}
-	fmt.Printf("Mime : %s\n", mimeType)
 
-	uploadFile(srv, outputTitle, "", *folderName, mimeType, *inputPath)
+	drive := &Drive{
+		Service:     srv,
+		FolderName:  *folderName,
+		Title:       outputTitle,
+		Description: "",
+		MimeType:    mimeType,
+		FileName:    *inputPath,
+	}
 
+	_, error := drive.UploadFile()
+	if error != nil {
+		fmt.Printf("Upload error: %s", error.Error())
+	}
 }
